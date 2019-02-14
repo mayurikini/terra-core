@@ -47,6 +47,11 @@ const propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   labelAttrs: PropTypes.object,
   /**
+   * The maximum number of options that can be selected. A value less than 2 will be ignored.
+   * Only applicable to variants allowing multiple selections (e.g.; `multiple`; `tag`).
+   */
+  maxSelectionCount: PropTypes.number,
+  /**
    * Set the max-width of a field using `length` or `%`.  Best practice recommendation to never exceed
    * a rendered value of 1020px. _(Note: Providing custom inline styles will take precedence.)_
    */
@@ -102,6 +107,7 @@ const defaultProps = {
   isInvalid: false,
   isLabelHidden: false,
   labelAttrs: {},
+  maxSelectionCount: undefined,
   maxWidth: undefined,
   onChange: undefined,
   placeholder: undefined,
@@ -123,6 +129,7 @@ const SelectField = ({
   isLabelHidden,
   label,
   labelAttrs,
+  maxSelectionCount,
   maxWidth,
   onChange,
   placeholder,
@@ -154,6 +161,7 @@ const SelectField = ({
       id={selectId}
       isInvalid={isInvalid}
       defaultValue={defaultValue}
+      maxSelectionCount={maxSelectionCount}
       onChange={onChange}
       placeholder={placeholder}
       value={value}
