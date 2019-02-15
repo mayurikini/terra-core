@@ -184,7 +184,7 @@ class Menu extends React.Component {
       if (hasNoResults && searchValue) {
         visuallyHiddenComponent.current.innerText = intl.formatMessage({ id: 'Terra.form.select.noResults' }, { text: searchValue });
       } else if (hasMaxSelection) {
-        visuallyHiddenComponent.current.innerText = intl.formatMessage({ id: 'Terra.form.select.maxSelection' }, { text: this.props.maxSelectionCount });
+        visuallyHiddenComponent.current.innerText = intl.formatMessage({ id: 'Terra.form.select.maxSelectionOption' }, { text: this.props.maxSelectionCount });
       } else {
         visuallyHiddenComponent.current.innerText = '';
       }

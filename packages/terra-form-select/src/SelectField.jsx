@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Field from 'terra-form-field';
 import Select from './Select';
 import { Variants } from './_constants';
+import MenuUtil from './_MenuUtil';
 
 const propTypes = {
   /**
@@ -118,62 +119,105 @@ const defaultProps = {
   variant: 'default',
 };
 
-const SelectField = ({
-  children,
-  defaultValue,
-  error,
-  help,
-  hideRequired,
-  isInline,
-  isInvalid,
-  isLabelHidden,
-  label,
-  labelAttrs,
-  maxSelectionCount,
-  maxWidth,
-  onChange,
-  placeholder,
-  required,
-  selectAttrs,
-  selectId,
-  showOptional,
-  value,
-  variant,
-  ...customProps
-}) => (
-  <Field
-    {...customProps}
-    label={label}
-    labelAttrs={labelAttrs}
-    error={error}
-    help={help}
-    hideRequired={hideRequired}
-    required={required}
-    showOptional={showOptional}
-    isInvalid={isInvalid}
-    isInline={isInline}
-    isLabelHidden={isLabelHidden}
-    htmlFor={selectId}
-    maxWidth={maxWidth}
-  >
-    <Select
-      {...selectAttrs}
-      id={selectId}
-      isInvalid={isInvalid}
-      defaultValue={defaultValue}
-      maxSelectionCount={maxSelectionCount}
-      onChange={onChange}
-      placeholder={placeholder}
-      value={value}
-      variant={variant}
-    >
-      {children}
-    </Select>
-  </Field>
-);
+const contextTypes = {
+  /* eslint-disable consistent-return */
+  intl: (context) => {
+    if (context.intl === undefined) {
+      return new Error('Component is internationalized, and must be wrapped in terra-base');
+    }
+  },
+};
+
+class SelectField extends React.Component {
+  constructor() {
+    super();
+
+    this.state = { help: undefined };
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(value) {
+    const { maxSelectionCount, variant } = this.props;
+
+    if (maxSelectionCount !== undefined && MenuUtil.allowsMultipleSelections(variant) && Array.isArray(value) && value.length >= maxSelectionCount) {
+      this.setState({ help: this.context.intl.formatMessage({ id: 'Terra.form.select.maxSelectionHelp' }, { text: maxSelectionCount }) });
+    } else {
+      this.setState({ help: this.props.help });
+    }
+
+    if (this.props.onChange) {
+      this.props.onChange(value);
+    }
+  }
+
+  render() {
+    const {
+      children,
+      defaultValue,
+      error,
+      help,
+      hideRequired,
+      isInline,
+      isInvalid,
+      isLabelHidden,
+      label,
+      labelAttrs,
+      maxSelectionCount,
+      maxWidth,
+      onChange,
+      placeholder,
+      required,
+      selectAttrs,
+      selectId,
+      showOptional,
+      value,
+      variant,
+      ...customProps
+    } = this.props;
+
+
+    let enforcedMaxSelectionCount = maxSelectionCount;
+    if (maxSelectionCount !== undefined && maxSelectionCount < 2 ) {
+      enforcedMaxSelectionCount = undefined;
+    }
+
+    return (
+      <Field
+        {...customProps}
+        label={label}
+        labelAttrs={labelAttrs}
+        error={error}
+        help={this.state.help ? this.state.help : help}
+        hideRequired={hideRequired}
+        required={required}
+        showOptional={showOptional}
+        isInvalid={isInvalid}
+        isInline={isInline}
+        isLabelHidden={isLabelHidden}
+        htmlFor={selectId}
+        maxWidth={maxWidth}
+      >
+        <Select
+          {...selectAttrs}
+          id={selectId}
+          isInvalid={isInvalid}
+          defaultValue={defaultValue}
+          maxSelectionCount={maxSelectionCount !== undefined && maxSelectionCount < 2  ? undefined : maxSelectionCount}
+          onChange={this.handleChange}
+          placeholder={placeholder}
+          value={value}
+          variant={variant}
+        >
+          {children}
+        </Select>
+      </Field>
+    );
+  }
+}
 
 SelectField.propTypes = propTypes;
 SelectField.defaultProps = defaultProps;
+SelectField.contextTypes = contextTypes;
 
 SelectField.Option = Select.Option;
 SelectField.OptGroup = Select.OptGroup;
