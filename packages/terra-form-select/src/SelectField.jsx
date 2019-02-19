@@ -140,7 +140,13 @@ class SelectField extends React.Component {
     const { maxSelectionCount, variant } = this.props;
 
     if (maxSelectionCount !== undefined && MenuUtil.allowsMultipleSelections(variant) && Array.isArray(value) && value.length >= maxSelectionCount) {
-      this.setState({ help: this.context.intl.formatMessage({ id: 'Terra.form.select.maxSelectionHelp' }, { text: maxSelectionCount }) });
+      let helpWithMaxSelectionCount = this.context.intl.formatMessage({ id: 'Terra.form.select.maxSelectionHelp' }, { text: maxSelectionCount });
+
+      if (this.props.help) {
+        helpWithMaxSelectionCount = <span>{helpWithMaxSelectionCount} {this.props.help}</span> 
+      }
+
+      this.setState({ help: helpWithMaxSelectionCount });
     } else {
       this.setState({ help: this.props.help });
     }

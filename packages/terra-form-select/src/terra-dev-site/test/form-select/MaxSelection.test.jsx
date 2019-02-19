@@ -9,14 +9,8 @@ const MaxSelectionExample = () => (
     placeholder="Select a color"
     selectId="select-field"
     variant="tag"
-    help="select up to 2 items"
+    help="Shades of blue and green."
   >
-    {/* <SelectField.Option value="blue" display="Blue" />
-    <SelectField.Option value="green" display="Green" />
-    <SelectField.Option value="purple" display="Purple" />
-    <SelectField.Option value="red" display="Red" />
-    <SelectField.Option value="violet" display="Violet" /> */}
-
     <SelectField.OptGroup label="Shades of Blue">
       <SelectField.Option value="blue" display="Blue" />
       <SelectField.Option value="cyan" display="Cyan" />
